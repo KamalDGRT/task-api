@@ -185,3 +185,34 @@ class TaskLog(Base):
         nullable=False,
         server_default=text('now()')
     )
+
+    creator = relationship("Employee")
+    updater = relationship("Employee")
+    initiative = relationship("Initiative")
+
+
+class Subscription(Base):
+    __tablename__ = "subscription"
+
+    subscription_id = Column(Integer, primary_key=True, index=True)
+
+    subscribed_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    initiative_id = Column(
+        Integer,
+        ForeignKey("initiative.initiative_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    subscribed_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+
+    subscriber = relationship("Employee")
+    initiative = relationship("Initiative")
