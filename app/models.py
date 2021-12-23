@@ -216,3 +216,32 @@ class Subscription(Base):
 
     subscriber = relationship("Employee")
     initiative = relationship("Initiative")
+
+
+class Review(Base):
+    __tablename__ = "review"
+
+    review_id = Column(Integer, primary_key=True, index=True)
+
+    initiative_id = Column(
+        Integer,
+        ForeignKey("initiative.initiative_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    description = Column(String, nullable=False)
+
+    given_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    given_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+
+    reviewer = relationship("Employee")
+    initiative = relationship("Initiative")
