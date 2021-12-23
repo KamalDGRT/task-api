@@ -2,11 +2,8 @@
 # How to run the code: uvicorn app.main:app --reload
 
 from fastapi import FastAPI
+from .routers import employee_type
 
-
-from app.database import SQLALCHEMY_DATABASE_URL
-
-print(SQLALCHEMY_DATABASE_URL)
 
 app = FastAPI(
     title="Task and Reward API",
@@ -17,6 +14,8 @@ app = FastAPI(
         "url": "https://github.com/KamalDGRT"
     }
 )
+
+app.include_router(employee_type.router)
 
 
 @app.get("/")

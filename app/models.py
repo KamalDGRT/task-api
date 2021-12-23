@@ -42,7 +42,10 @@ class Employee(Base):
     # This is gonna create another property for us for our employee table
     # so that when we retrieve our employee details, it will fetch the
     # properties of the employee_type table
-    employee_type = relationship("EmployeeType")
+    employee_type = relationship(
+        "EmployeeType",
+        foreign_keys=[employee_type_id]
+    )
 
 
 class StatusCode(Base):
@@ -73,8 +76,8 @@ class StatusCode(Base):
         nullable=False
     )
 
-    creator = relationship("Employee")
-    updater = relationship("Employee")
+    creator = relationship("Employee", foreign_keys=[created_by])
+    updater = relationship("Employee", foreign_keys=[updated_by])
 
 
 class InitiativeType(Base):
@@ -106,8 +109,8 @@ class InitiativeType(Base):
         nullable=False
     )
 
-    creator = relationship("Employee")
-    updater = relationship("Employee")
+    creator = relationship("Employee", foreign_keys=[created_by])
+    updater = relationship("Employee", foreign_keys=[updated_by])
 
 
 class Initiative(Base):
@@ -151,9 +154,9 @@ class Initiative(Base):
         nullable=False
     )
 
-    creator = relationship("Employee")
-    updater = relationship("Employee")
-    status = relationship("StatusCode")
+    creator = relationship("Employee", foreign_keys=[created_by])
+    updater = relationship("Employee", foreign_keys=[updated_by])
+    status = relationship("StatusCode", foreign_keys=[status_id])
 
 
 class TaskLog(Base):
@@ -186,9 +189,8 @@ class TaskLog(Base):
         server_default=text('now()')
     )
 
-    creator = relationship("Employee")
-    updater = relationship("Employee")
-    initiative = relationship("Initiative")
+    creator = relationship("Employee", foreign_keys=[logged_by])
+    initiative = relationship("Initiative", foreign_keys=[initiative_id])
 
 
 class Subscription(Base):
@@ -214,8 +216,8 @@ class Subscription(Base):
         server_default=text('now()')
     )
 
-    subscriber = relationship("Employee")
-    initiative = relationship("Initiative")
+    subscriber = relationship("Employee", foreign_keys=[subscribed_by])
+    initiative = relationship("Initiative", foreign_keys=[initiative_id])
 
 
 class Review(Base):
@@ -243,8 +245,8 @@ class Review(Base):
         server_default=text('now()')
     )
 
-    reviewer = relationship("Employee")
-    initiative = relationship("Initiative")
+    reviewer = relationship("Employee", foreign_keys=[given_by])
+    initiative = relationship("Initiative", foreign_keys=[initiative_id])
 
 
 class Rating(Base):
@@ -272,5 +274,5 @@ class Rating(Base):
         server_default=text('now()')
     )
 
-    rater = relationship("Employee")
-    initiative = relationship("Initiative")
+    rater = relationship("Employee", foreign_keys=[given_by])
+    initiative = relationship("Initiative", foreign_keys=[initiative_id])
