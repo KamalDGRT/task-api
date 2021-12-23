@@ -245,3 +245,32 @@ class Review(Base):
 
     reviewer = relationship("Employee")
     initiative = relationship("Initiative")
+
+
+class Rating(Base):
+    __tablename__ = "rating"
+
+    rating_id = Column(Integer, primary_key=True, index=True)
+
+    initiative_id = Column(
+        Integer,
+        ForeignKey("initiative.initiative_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    point = Column(Integer, nullable=False)
+
+    given_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    given_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+
+    rater = relationship("Employee")
+    initiative = relationship("Initiative")
