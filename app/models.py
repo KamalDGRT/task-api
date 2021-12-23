@@ -13,8 +13,8 @@ class EmployeeType(Base):
 
     employee_type_id = Column(Integer, primary_key=True, index=True)
     role_name = Column(String, index=True, nullable=False)
-    created_at = Column(TIMESTAMP(
-        timezone=True),
+    created_at = Column(
+        TIMESTAMP(timezone=True),
         nullable=False,
         server_default=text('now()')
     )
@@ -33,8 +33,8 @@ class Employee(Base):
         ForeignKey("employee_type.employee_type_id", ondelete="CASCADE"),
         nullable=False
     )
-    created_at = Column(TIMESTAMP(
-        timezone=True),
+    created_at = Column(
+        TIMESTAMP(timezone=True),
         nullable=False,
         server_default=text('now()')
     )
@@ -43,3 +43,35 @@ class Employee(Base):
     # so that when we retrieve our employee details, it will fetch the
     # properties of the employee_type table
     employee_type = relationship("EmployeeType")
+
+
+class StatusCode(Base):
+    __tablename__ = "status_code"
+
+    status_id = Column(Integer, primary_key=True, index=True)
+    description = Column(String, nullable=False)
+
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+    created_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+    updated_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    creator = relationship("Employee")
+    updater = relationship("Employee")
