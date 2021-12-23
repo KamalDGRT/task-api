@@ -108,3 +108,49 @@ class InitiativeType(Base):
 
     creator = relationship("Employee")
     updater = relationship("Employee")
+
+
+class Initiative(Base):
+    __tablename__ = "initiative"
+
+    initiative_id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+
+    initiative_type = Column(
+        Integer,
+        ForeignKey("initiative_type.initiative_type_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+    created_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+    updated_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    status_id = Column(
+        Integer,
+        ForeignKey("status_code.status_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    creator = relationship("Employee")
+    updater = relationship("Employee")
+    status = relationship("StatusCode")
