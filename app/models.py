@@ -154,3 +154,34 @@ class Initiative(Base):
     creator = relationship("Employee")
     updater = relationship("Employee")
     status = relationship("StatusCode")
+
+
+class TaskLog(Base):
+    __tablename__ = "task_log"
+
+    task_id = Column(Integer, primary_key=True, index=True)
+
+    initiative_id = Column(
+        Integer,
+        ForeignKey("initiative.initiative_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    description = Column(String, nullable=False)
+
+    logged_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+    logged_by = Column(
+        Integer,
+        ForeignKey("employee.employee_id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
