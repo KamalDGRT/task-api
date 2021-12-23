@@ -2,7 +2,7 @@
 # How to run the code: uvicorn app.main:app --reload
 
 from fastapi import FastAPI
-from .routers import employee_type
+from .routers import employee_type, employee, auth
 
 
 app = FastAPI(
@@ -16,6 +16,8 @@ app = FastAPI(
 )
 
 app.include_router(employee_type.router)
+app.include_router(employee.router)
+app.include_router(auth.router)
 
 
 @app.get("/")

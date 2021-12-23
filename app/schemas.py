@@ -10,11 +10,13 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr
-from pydantic.types import conint
 
 
 class EmployeeTypeCreate(BaseModel):
     role_name: str
+
+    class Config:
+        orm_mode = True
 
 
 class EmployeeType(EmployeeTypeCreate):
@@ -26,7 +28,7 @@ class EmployeeType(EmployeeTypeCreate):
 
 
 class EmployeeOut(BaseModel):
-    id: int
+    employee_id: int
     email: EmailStr
     created_at: datetime
 
@@ -44,6 +46,22 @@ class EmployeeCreate(BaseModel):
 class EmployeeLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+class Employee(BaseModel):
+    employee_id: int
+    email: EmailStr
+    employee_name: str
+    employee_type: EmployeeTypeCreate
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+    employee_type: EmployeeTypeCreate
+
+    class Config:
+        orm_mode = True
 
 
 class Token(BaseModel):
