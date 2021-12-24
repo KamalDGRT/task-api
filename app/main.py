@@ -7,7 +7,8 @@ from .routers import (
     employee,
     auth,
     initiative_type,
-    status_code
+    status_code,
+    initiative
 )
 
 
@@ -26,6 +27,7 @@ app.include_router(employee.router)
 app.include_router(auth.router)
 app.include_router(initiative_type.router)
 app.include_router(status_code.router)
+app.include_router(initiative.router)
 
 
 @app.get("/")

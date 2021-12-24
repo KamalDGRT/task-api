@@ -154,6 +154,7 @@ class Initiative(Base):
         nullable=False
     )
 
+    init_type = relationship("InitiativeType", foreign_keys=[initiative_type])
     creator = relationship("Employee", foreign_keys=[created_by])
     updater = relationship("Employee", foreign_keys=[updated_by])
     status = relationship("StatusCode", foreign_keys=[status_id])

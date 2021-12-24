@@ -88,6 +88,13 @@ class InitiativeTypeCreate(BaseModel):
         orm_mode = True
 
 
+class InitiativeTypeSimple(BaseModel):
+    name: str
+
+    class Config:
+        orm_mode = True
+
+
 class InitiativeType(InitiativeTypeCreate):
     initiative_type_id: int
 
@@ -136,6 +143,56 @@ class StatusCodeUpdate(StatusCode):
 
 
 class StatusCodeComplete(StatusCodeUpdate):
+    creator: SimpleEmployee
+    updater: SimpleEmployee
+
+    class Config:
+        orm_mode = True
+
+# ----------------------------------------------
+
+
+class InitiativeCreate(BaseModel):
+    title: str
+    description: str
+    # setting the default to: meetups
+    initiative_type: int = 2
+    # setting the default to: In Discussion
+    status_id: int = 3
+
+    class Config:
+        orm_mode = True
+
+
+class Initiative(InitiativeCreate):
+    initiative_id: int
+    init_type: InitiativeType
+
+    class Config:
+        orm_mode = True
+
+
+class InitiativeSimple(BaseModel):
+    initiative_id: int
+    title: str
+    description: str
+    init_type: InitiativeTypeSimple
+    status: StatusCodeCreate
+
+    class Config:
+        orm_mode = True
+
+
+class InitiativeUpdate(Initiative):
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class InitiativeComplete(InitiativeUpdate):
+    status: StatusCodeCreate
     creator: SimpleEmployee
     updater: SimpleEmployee
 
