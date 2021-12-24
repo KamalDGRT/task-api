@@ -105,7 +105,7 @@ def get_initiative_type(
     '/delete/{id}',
     status_code=status.HTTP_204_NO_CONTENT
 )
-def delete_employee_type(
+def delete_initiative_type(
     id: int,
     db: Session = Depends(get_db),
     current_employee: int = Depends(oauth2.get_current_employee)

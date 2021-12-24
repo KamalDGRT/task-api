@@ -140,7 +140,7 @@ def delete_employee_type(
     '/update/{id}',
     response_model=schemas.EmployeeType
 )
-def update_empl_type(
+def update_employee_type(
     id: int,
     updated_empl_type: schemas.EmployeeTypeCreate,
     db: Session = Depends(get_db),

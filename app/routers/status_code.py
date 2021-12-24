@@ -105,7 +105,7 @@ def get_status_code(
     '/delete/{id}',
     status_code=status.HTTP_204_NO_CONTENT
 )
-def delete_employee_type(
+def delete_status_code(
     id: int,
     db: Session = Depends(get_db),
     current_employee: int = Depends(oauth2.get_current_employee)

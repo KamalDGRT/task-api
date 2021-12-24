@@ -38,7 +38,8 @@ class EmployeeOut(BaseModel):
 
 class EmployeeCreate(BaseModel):
     employee_name: str
-    employee_type_id: int
+    # Creating a default user called the normal user.
+    employee_type_id: int = 4
     email: EmailStr
     password: str
 
