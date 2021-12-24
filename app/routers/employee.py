@@ -42,7 +42,7 @@ def create_employee(
     if db_user:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Failed to create the uUser Already Exists !!!"
+            detail=f"Failed to create the employee record. Reason: email exists in the DB"
         )
 
     db.add(new_user)

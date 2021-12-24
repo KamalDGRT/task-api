@@ -67,7 +67,7 @@ def get_current_employee(
     token = verify_access_token(token, credentials_exception)
 
     employee = db.query(models.Employee).filter(
-        models.employee.employee_id == token.employee_id
+        models.Employee.employee_id == token.employee_id
     ).first()
 
     return employee

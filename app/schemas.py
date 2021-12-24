@@ -70,4 +70,4 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    id: Optional[str] = None
+    employee_id: Optional[str] = None

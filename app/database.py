@@ -14,7 +14,7 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.
 # Engine is responsible for etablishing a connection for
 # SQLAlchemy to connect to postgres database.
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-print(SQLALCHEMY_DATABASE_URL)
+
 # When you talk to a SQL database we need to make use of session
 SessionLocal = sessionmaker(
     autocommit=False,

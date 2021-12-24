@@ -14,30 +14,47 @@ router = APIRouter(
 )
 
 
-@router.get('/all', response_model=List[schemas.EmployeeType])
+@router.get(
+    '/all',
+    response_model=List[schemas.EmployeeType]
+)
 # @router.get('/')
 def get_employee_types(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_employee: int = Depends(oauth2.get_current_employee)
 ):
+
+    if current_employee.employee_type_id != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Not Authorized to perform requested action!"
+        )
+
     results = db.query(models.EmployeeType).all()
-    print(results)
     return results
 
 
 @router.post(
     '/create',
     status_code=status.HTTP_201_CREATED,
-    response_model=schemas.EmployeeType
+    response_model=schemas.EmployeeType,
 )
 def create_employee_type(
     empl_type: schemas.EmployeeTypeCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_employee: int = Depends(oauth2.get_current_employee)
 ):
 
     new_empl_type = models.EmployeeType(**empl_type.dict())
     # ** unpacks the dictionary into this format:
     # title=post.title, content=post.content, ...
     # This prevents us from specifiying individual fields
+
+    if current_employee.employee_type_id != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Not Authorized to perform requested action!"
+        )
 
     db.add(new_empl_type)
     db.commit()
@@ -53,6 +70,7 @@ def create_employee_type(
 def get_employee_type(
     id: int,
     db: Session = Depends(get_db),
+    current_employee: int = Depends(oauth2.get_current_employee)
 ):
     """ 
     {id} is a path parameter
@@ -66,6 +84,13 @@ def get_employee_type(
     # Plus we are adding a comma after the str(id) because we run into an
     # error later. Don't know the reason for the error yet.
     # post = cursor.fetchone()
+
+    if current_employee.employee_type_id != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Not Authorized to perform requested action!"
+        )
+
     empl_type = db.query(models.EmployeeType).filter(
         models.EmployeeType.employee_type_id == id
     ).first()
@@ -86,7 +111,14 @@ def get_employee_type(
 def delete_employee_type(
     id: int,
     db: Session = Depends(get_db),
+    current_employee: int = Depends(oauth2.get_current_employee)
 ):
+
+    if current_employee.employee_type_id != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Not Authorized to perform requested action!"
+        )
 
     empl_type_query = db.query(models.EmployeeType).filter(
         models.EmployeeType.employee_type_id == id)
@@ -113,7 +145,14 @@ def update_empl_type(
     id: int,
     updated_empl_type: schemas.EmployeeTypeCreate,
     db: Session = Depends(get_db),
+    current_employee: int = Depends(oauth2.get_current_employee)
 ):
+
+    if current_employee.employee_type_id != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Not Authorized to perform requested action!"
+        )
 
     empl_type_query = db.query(
         models.EmployeeType
