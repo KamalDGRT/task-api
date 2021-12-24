@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import status, HTTPException, Response, Depends, APIRouter
 from typing import List
 from sqlalchemy.orm import Session
@@ -8,65 +9,62 @@ from .. import models, schemas, oauth2
 # Using hyphen by following this answer
 # https://stackoverflow.com/a/18449772
 router = APIRouter(
-    prefix='/employee-type',
-    tags=['Employee Type']
+    prefix='/initiative-type',
+    tags=['Initiative Type']
 )
 
 
 @router.get(
     '/all',
-    response_model=List[schemas.EmployeeType]
+    response_model=List[schemas.InitiativeType]
 )
 # @router.get('/')
-def get_employee_types(
+def get_initiative_types(
     db: Session = Depends(get_db),
-    current_employee: int = Depends(oauth2.get_current_employee)
 ):
-
-    if current_employee.employee_type_id != 1:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Not Authorized to perform requested action!"
-        )
-
-    results = db.query(models.EmployeeType).all()
+    results = db.query(models.InitiativeType).all()
     return results
 
 
 @router.post(
     '/create',
     status_code=status.HTTP_201_CREATED,
-    response_model=schemas.EmployeeType,
+    response_model=schemas.InitiativeType,
 )
-def create_employee_type(
-    empl_type: schemas.EmployeeTypeCreate,
+def create_initiative_type(
+    initiative_type: schemas.InitiativeTypeCreate,
     db: Session = Depends(get_db),
     current_employee: int = Depends(oauth2.get_current_employee)
 ):
 
-    new_empl_type = models.EmployeeType(**empl_type.dict())
-    # ** unpacks the dictionary into this format:
-    # title=post.title, content=post.content, ...
-    # This prevents us from specifiying individual fields
-
+    # Allowing only the admins to proceed
     if current_employee.employee_type_id != 1:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"Not Authorized to perform requested action!"
         )
 
-    db.add(new_empl_type)
-    db.commit()
-    db.refresh(new_empl_type)
+    new_initiative_type = models.InitiativeType(
+        created_by=current_employee.employee_id,
+        updated_by=current_employee.employee_id,
+        **initiative_type.dict(),
+    )
+    # ** unpacks the dictionary into this format:
+    # title=post.title, content=post.content, ...
+    # This prevents us from specifiying individual fields
 
-    return new_empl_type
+    db.add(new_initiative_type)
+    db.commit()
+    db.refresh(new_initiative_type)
+
+    return new_initiative_type
 
 
 @router.get(
     '/info/{id}',
-    response_model=schemas.EmployeeType
+    response_model=schemas.InitiativeTypeComplete
 )
-def get_employee_type(
+def get_initiative_type(
     id: int,
     db: Session = Depends(get_db),
     current_employee: int = Depends(oauth2.get_current_employee)
@@ -90,17 +88,17 @@ def get_employee_type(
             detail=f"Not Authorized to perform requested action!"
         )
 
-    empl_type = db.query(models.EmployeeType).filter(
-        models.EmployeeType.employee_type_id == id
+    initiative_type = db.query(models.InitiativeType).filter(
+        models.InitiativeType.initiative_type_id == id
     ).first()
 
-    if not empl_type:
+    if not initiative_type:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Employee Type with id: {id} not found!"
+            detail=f"Initiative Type with id: {id} not found!"
         )
 
-    return empl_type
+    return initiative_type
 
 
 @router.delete(
@@ -119,17 +117,20 @@ def delete_employee_type(
             detail=f"Not Authorized to perform requested action!"
         )
 
-    empl_type_query = db.query(models.EmployeeType).filter(
-        models.EmployeeType.employee_type_id == id)
-    empl_type = empl_type_query.first()
+    initiative_type_query = db.query(
+        models.InitiativeType
+    ).filter(
+        models.InitiativeType.initiative_type_id == id
+    )
+    initiative_type = initiative_type_query.first()
 
-    if empl_type is None:
+    if initiative_type is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Employee Type with id: {id} does not exist!"
+            detail=f"Initiative Type with id: {id} does not exist!"
         )
 
-    empl_type_query.delete(synchronize_session=False)
+    initiative_type_query.delete(synchronize_session=False)
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -138,40 +139,47 @@ def delete_employee_type(
 # make sure to add some body in the postman to check it.
 @router.put(
     '/update/{id}',
-    response_model=schemas.EmployeeType
+    response_model=schemas.InitiativeTypeUpdate
 )
-def update_empl_type(
+def update_initiative_type(
     id: int,
-    updated_empl_type: schemas.EmployeeTypeCreate,
+    updated_initiative_type: schemas.InitiativeTypeCreate,
     db: Session = Depends(get_db),
     current_employee: int = Depends(oauth2.get_current_employee)
 ):
 
+    print(updated_initiative_type)
     if current_employee.employee_type_id != 1:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"Not Authorized to perform requested action!"
         )
 
-    empl_type_query = db.query(
-        models.EmployeeType
+    initiative_type_query = db.query(
+        models.InitiativeType
     ).filter(
-        models.EmployeeType.employee_type_id == id
+        models.InitiativeType.initiative_type_id == id
     )
 
-    empl_type = empl_type_query.first()
+    initiative_type = initiative_type_query.first()
 
-    if empl_type is None:
+    if initiative_type is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Employee Type with id: {id} does not exist!"
+            detail=f"Initiative Type with id: {id} does not exist!"
         )
 
-    empl_type_query.update(
-        updated_empl_type.dict(),
+    # print(initiative_type.__dict__)
+    updated_init_type = updated_initiative_type.dict()
+    updated_init_type["updated_by"] = current_employee.employee_id
+    updated_init_type["updated_at"] = datetime.now().astimezone()
+
+    # print(updated_init_type)
+    initiative_type_query.update(
+        updated_init_type,
         synchronize_session=False
     )
     db.commit()
 
     # Sending the updated empl_type back to the user
-    return empl_type_query.first()
+    return initiative_type_query.first()

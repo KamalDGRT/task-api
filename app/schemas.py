@@ -58,11 +58,6 @@ class Employee(BaseModel):
     class Config:
         orm_mode = True
 
-    employee_type: EmployeeTypeCreate
-
-    class Config:
-        orm_mode = True
-
 
 class Token(BaseModel):
     access_token: str
@@ -71,3 +66,45 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     employee_id: Optional[str] = None
+
+# ----------------------------------------------
+
+
+class SimpleEmployee(BaseModel):
+    employee_id: int
+    employee_name: str
+    employee_type: EmployeeTypeCreate
+
+    class Config:
+        orm_mode = True
+
+
+class InitiativeTypeCreate(BaseModel):
+    name: str
+    description: str
+
+    class Config:
+        orm_mode = True
+
+
+class InitiativeType(InitiativeTypeCreate):
+    initiative_type_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class InitiativeTypeUpdate(InitiativeType):
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class InitiativeTypeComplete(InitiativeTypeUpdate):
+    creator: SimpleEmployee
+    updater: SimpleEmployee
+
+    class Config:
+        orm_mode = True
