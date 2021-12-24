@@ -108,3 +108,35 @@ class InitiativeTypeComplete(InitiativeTypeUpdate):
 
     class Config:
         orm_mode = True
+
+# ----------------------------------------------
+
+
+class StatusCodeCreate(BaseModel):
+    description: str
+
+    class Config:
+        orm_mode = True
+
+
+class StatusCode(StatusCodeCreate):
+    status_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class StatusCodeUpdate(StatusCode):
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class StatusCodeComplete(StatusCodeUpdate):
+    creator: SimpleEmployee
+    updater: SimpleEmployee
+
+    class Config:
+        orm_mode = True
