@@ -191,7 +191,7 @@ class InitiativeSimple(BaseModel):
         orm_mode = True
 
 
-class InitiativeShortForTaskLog(BaseModel):
+class InitiativeShort(BaseModel):
     initiative_id: int
     title: str
 
@@ -237,7 +237,7 @@ class TaskLog(TaskLogCreate):
 class TaskLogSimple(BaseModel):
     task_id: int
     description: str
-    initiative: InitiativeShortForTaskLog
+    initiative: InitiativeShort
     creator: EmployeeShort
 
     class Config:
@@ -280,7 +280,7 @@ class Review(ReviewCreate):
 class ReviewSimple(BaseModel):
     review_id: int
     description: str
-    initiative: InitiativeShortForTaskLog
+    initiative: InitiativeShort
     reviewer: EmployeeShort
 
     class Config:
@@ -297,6 +297,49 @@ class ReviewUpdate(ReviewSimple):
 
 class ReviewComplete(ReviewUpdate):
     reviewer: SimpleEmployee
+
+    class Config:
+        orm_mode = True
+
+# ----------------------------------------------
+
+
+class RatingCreate(BaseModel):
+    initiative_id: int
+    point: int
+
+    class Config:
+        orm_mode = True
+
+
+class Rating(RatingCreate):
+    rating_id: int
+    initiative: InitiativeSimple
+
+    class Config:
+        orm_mode = True
+
+
+class RatingSimple(BaseModel):
+    rating_id: int
+    point: int
+    initiative: InitiativeShort
+    rater: EmployeeShort
+
+    class Config:
+        orm_mode = True
+
+
+class RatingUpdate(RatingSimple):
+    given_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class RatingComplete(RatingUpdate):
+    rater: SimpleEmployee
 
     class Config:
         orm_mode = True
