@@ -281,5 +281,11 @@ class Rating(Base):
         server_default=text('now()')
     )
 
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text('now()')
+    )
+
     rater = relationship("Employee", foreign_keys=[given_by])
     initiative = relationship("Initiative", foreign_keys=[initiative_id])
