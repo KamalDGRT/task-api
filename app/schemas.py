@@ -60,6 +60,14 @@ class Employee(BaseModel):
         orm_mode = True
 
 
+class EmployeeShort(BaseModel):
+    employee_id: int
+    employee_name: str
+
+    class Config:
+        orm_mode = True
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -183,6 +191,14 @@ class InitiativeSimple(BaseModel):
         orm_mode = True
 
 
+class InitiativeShortForTaskLog(BaseModel):
+    initiative_id: int
+    title: str
+
+    class Config:
+        orm_mode = True
+
+
 class InitiativeUpdate(Initiative):
     created_at: datetime
     updated_at: datetime
@@ -195,6 +211,49 @@ class InitiativeComplete(InitiativeUpdate):
     status: StatusCodeCreate
     creator: SimpleEmployee
     updater: SimpleEmployee
+
+    class Config:
+        orm_mode = True
+
+# ----------------------------------------------
+
+
+class TaskLogCreate(BaseModel):
+    initiative_id: int
+    description: str
+
+    class Config:
+        orm_mode = True
+
+
+class TaskLog(TaskLogCreate):
+    task_id: int
+    initiative: InitiativeSimple
+
+    class Config:
+        orm_mode = True
+
+
+class TaskLogSimple(BaseModel):
+    task_id: int
+    description: str
+    initiative: InitiativeShortForTaskLog
+    creator: EmployeeShort
+
+    class Config:
+        orm_mode = True
+
+
+class TaskLogUpdate(TaskLogSimple):
+    logged_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class TaskLogComplete(TaskLogUpdate):
+    creator: SimpleEmployee
 
     class Config:
         orm_mode = True
