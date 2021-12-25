@@ -9,7 +9,8 @@ from .routers import (
     initiative_type,
     status_code,
     initiative,
-    task_log
+    task_log,
+    review
 )
 
 
@@ -30,6 +31,7 @@ app.include_router(initiative_type.router)
 app.include_router(status_code.router)
 app.include_router(initiative.router)
 app.include_router(task_log.router)
+app.include_router(review.router)
 
 
 @app.get("/")

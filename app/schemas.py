@@ -257,3 +257,46 @@ class TaskLogComplete(TaskLogUpdate):
 
     class Config:
         orm_mode = True
+
+# ----------------------------------------------
+
+
+class ReviewCreate(BaseModel):
+    initiative_id: int
+    description: str
+
+    class Config:
+        orm_mode = True
+
+
+class Review(ReviewCreate):
+    review_id: int
+    initiative: InitiativeSimple
+
+    class Config:
+        orm_mode = True
+
+
+class ReviewSimple(BaseModel):
+    review_id: int
+    description: str
+    initiative: InitiativeShortForTaskLog
+    reviewer: EmployeeShort
+
+    class Config:
+        orm_mode = True
+
+
+class ReviewUpdate(ReviewSimple):
+    given_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ReviewComplete(ReviewUpdate):
+    reviewer: SimpleEmployee
+
+    class Config:
+        orm_mode = True
