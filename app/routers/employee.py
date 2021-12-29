@@ -1,13 +1,24 @@
 from typing import List
 from fastapi import status, HTTPException, Response, Depends, APIRouter
 from sqlalchemy.orm import Session
-from .. import models, schemas, utils
+from .. import models, schemas, utils, oauth2
 from ..database import get_db
 
 router = APIRouter(
     prefix='/employee',
     tags=['Employees']
 )
+
+
+@router.get(
+    '/me',
+    response_model=schemas.Employee
+)
+# @router.get('/')
+def get_current_employee(
+    current_employee: int = Depends(oauth2.get_current_employee)
+):
+    return current_employee
 
 
 @router.get('/all', response_model=List[schemas.Employee])
